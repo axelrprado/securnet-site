@@ -1,927 +1,422 @@
 <!DOCTYPE html>
-<html lang="es">
+<html class="dark" lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SecurNet — Software para Centrales Receptoras de Alarmas</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#FAFAF7;
-  --bg2:#F3F2EC;
-  --bg3:#EDECEA;
-  --ink:#0D0D0B;
-  --ink2:#1C1C1A;
-  --muted:#7A756E;
-  --border:#D8D4CC;
-  --border2:#C4BFB5;
-  --gold:#B8962A;
-  --gold2:#D4AE38;
-  --gold-dim:#F9F3DC;
-  --gold-dark:#7A6018;
-  --black:#0D0D0B;
-  --alarm:#C41A1A;
-  --alarm-dim:#FEF2F2;
-  --green:#166534;
-  --green-dim:#F0FDF4;
-  --ai:#5B21B6;
-  --ai-dim:#F5F3FF;
-}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;cursor:none}
-.cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transition:transform .1s}
-.cursor-ring{position:fixed;width:30px;height:30px;border:1px solid rgba(184,150,42,.4);border-radius:50%;pointer-events:none;z-index:9998;transition:all .15s ease}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.25rem 4rem;border-bottom:1px solid var(--border);backdrop-filter:blur(20px);background:rgba(250,250,247,.92)}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.1em;color:var(--ink);display:flex;align-items:center;gap:.75rem}
-.logo-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:pd 1.5s infinite}
-@keyframes pd{0%,100%{box-shadow:0 0 0 0 rgba(184,150,42,.5)}50%{box-shadow:0 0 0 6px rgba(184,150,42,0)}}
-.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
-.nav-links a{color:var(--muted);text-decoration:none;font-size:.85rem;letter-spacing:.04em;transition:color .2s}
-.nav-links a:hover{color:var(--ink)}
-.nav-cta{background:var(--ink);color:#fff;padding:.5rem 1.5rem;border-radius:2px;font-size:.85rem;text-decoration:none;letter-spacing:.05em;transition:background .2s}
-.nav-cta:hover{background:var(--gold)}
-
-/* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:8rem 4rem 4rem;position:relative;overflow:hidden;background:var(--ink)}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,42,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,42,.07) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent)}
-.hero-glow{position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(184,150,42,.07) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none}
-.hero-tag{display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(184,150,42,.3);padding:.375rem 1rem;border-radius:2px;font-size:.72rem;letter-spacing:.1em;color:rgba(184,150,42,.8);margin-bottom:2rem;font-family:'DM Mono',monospace;background:rgba(184,150,42,.05)}
-.hero-tag b{color:var(--gold)}
-.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,8vw,7rem);line-height:.95;letter-spacing:.02em;max-width:900px;margin-bottom:1.5rem;color:#F5F2EB}
-.hero h1 em{color:var(--gold);font-style:normal}
-.hero-sub{font-size:1.05rem;color:rgba(245,242,235,.55);max-width:540px;line-height:1.7;margin-bottom:2.5rem}
-.hero-actions{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
-.btn-gold{background:var(--gold);color:var(--ink);padding:.875rem 2.5rem;border-radius:2px;font-size:.9rem;text-decoration:none;letter-spacing:.06em;font-weight:500;transition:all .2s;border:none;cursor:none;display:inline-block}
-.btn-gold:hover{background:var(--gold2);transform:translateY(-1px)}
-.btn-ghost-hero{border:1px solid rgba(245,242,235,.2);color:rgba(245,242,235,.6);padding:.875rem 2rem;border-radius:2px;font-size:.85rem;text-decoration:none;transition:all .2s;display:inline-block}
-.btn-ghost-hero:hover{border-color:rgba(245,242,235,.6);color:#F5F2EB}
-.hero-stats{display:flex;gap:3rem;margin-top:4rem;padding-top:3rem;border-top:1px solid rgba(184,150,42,.2);flex-wrap:wrap}
-.stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.05em;color:var(--gold)}
-.stat-label{font-size:.72rem;letter-spacing:.1em;color:rgba(245,242,235,.4);text-transform:uppercase;margin-top:.2rem}
-
-/* TICKER */
-.ticker{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:.75rem 0;overflow:hidden}
-.ticker-inner{display:flex;gap:3rem;animation:tick 35s linear infinite;white-space:nowrap}
-.ticker-item{display:flex;align-items:center;gap:.75rem;font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted)}
-.tdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.t-alarm{color:var(--alarm)}.t-alarm .tdot{background:var(--alarm)}
-.t-ok{color:var(--green)}.t-ok .tdot{background:var(--green)}
-.t-info{color:var(--gold-dark)}.t-info .tdot{background:var(--gold)}
-.t-ai{color:var(--ai)}.t-ai .tdot{background:var(--ai)}
-@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-
-/* SECTIONS */
-section{padding:6rem 4rem;position:relative;z-index:1}
-.section-tag{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.15em;color:var(--gold-dark);margin-bottom:1rem;text-transform:uppercase}
-h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);letter-spacing:.03em;line-height:1;margin-bottom:1rem;color:var(--ink)}
-.section-sub{color:var(--muted);font-size:1rem;max-width:500px;line-height:1.7}
-
-/* VS TABLE */
-.vs-section{background:var(--bg)}
-.vs-table{width:100%;border-collapse:collapse;margin-top:3rem;font-size:.85rem}
-.vs-table th{padding:1rem 1.5rem;text-align:left;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:var(--muted);border-bottom:1px solid var(--border)}
-.vs-table th.hl{color:var(--ink);background:var(--gold-dim);border-bottom:2px solid var(--gold)}
-.vs-table td{padding:.875rem 1.5rem;border-bottom:1px solid var(--border);color:var(--muted)}
-.vs-table td.hl{background:rgba(184,150,42,.04);color:var(--ink);font-weight:400}
-.vs-table tr:last-child td{border-bottom:none}
-.vs-table tr:hover td{background:var(--bg2)}
-.vs-table tr:hover td.hl{background:rgba(184,150,42,.07)}
-.check{color:var(--green);font-weight:500}
-.cross{color:var(--border2)}
-.price-cell{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.05em;color:var(--ink)}
-.price-gold{color:var(--gold-dark)}
-
-/* FEATURES */
-.features{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
-.feat{border:1px solid var(--border);border-radius:4px;padding:1.75rem;background:var(--bg);transition:all .3s;position:relative;overflow:hidden}
-.feat:hover{border-color:var(--gold);box-shadow:0 4px 24px rgba(184,150,42,.08);transform:translateY(-2px)}
-.feat.ai-feat{border-color:rgba(91,33,182,.15);background:var(--ai-dim)}
-.feat.ai-feat:hover{border-color:var(--ai)}
-.feat-num{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--gold-dark);letter-spacing:.1em;margin-bottom:1rem}
-.feat.ai-feat .feat-num{color:var(--ai)}
-.feat h3{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.05em;margin-bottom:.75rem;color:var(--ink)}
-.feat p{font-size:.82rem;color:var(--muted);line-height:1.6}
-.feat-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem}
-.ftag{font-size:.65rem;padding:.2rem .6rem;border-radius:2px;font-family:'DM Mono',monospace;letter-spacing:.06em}
-.ftag-gold{background:var(--gold-dim);color:var(--gold-dark)}
-.ftag-ai{background:var(--ai-dim);color:var(--ai)}
-.ftag-green{background:var(--green-dim);color:var(--green)}
-.ai-badge{display:inline-flex;align-items:center;gap:.4rem;background:var(--ai-dim);border:1px solid rgba(91,33,182,.2);border-radius:2px;padding:.3rem .75rem;font-family:'DM Mono',monospace;font-size:.65rem;color:var(--ai);letter-spacing:.08em;margin-bottom:2rem}
-
-/* NOTIF */
-.notif-section{background:var(--bg)}
-.notif-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-top:3rem}
-.notif-cards{display:flex;flex-direction:column;gap:1rem}
-.notif-card{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;transition:all .2s}
-.notif-card:hover{border-color:var(--gold);box-shadow:0 2px 16px rgba(184,150,42,.08)}
-.notif-icon{width:40px;height:40px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
-.ni-wa{background:rgba(37,211,102,.1)}
-.ni-mail{background:rgba(59,130,246,.1)}
-.ni-sms{background:var(--gold-dim)}
-.notif-card h4{font-size:.9rem;font-weight:500;margin-bottom:.25rem;color:var(--ink)}
-.notif-card p{font-size:.8rem;color:var(--muted);line-height:1.5}
-.notif-preview{background:var(--ink);border:1px solid rgba(184,150,42,.2);border-radius:8px;overflow:hidden}
-.np-header{background:#161614;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid rgba(184,150,42,.15);font-family:'DM Mono',monospace;font-size:.72rem;color:rgba(245,242,235,.4)}
-.np-dot{width:8px;height:8px;border-radius:50%}
-.np-body{padding:1.25rem;display:flex;flex-direction:column;gap:.75rem;background:#0D0D0B}
-.wa-bubble{background:#1a1a18;border:1px solid rgba(184,150,42,.12);border-radius:6px 6px 6px 0;padding:.875rem 1rem;max-width:90%}
-.wa-bubble.out{background:rgba(184,150,42,.1);align-self:flex-end;border-radius:6px 6px 0 6px;border-color:rgba(184,150,42,.2)}
-.wa-bubble p{font-size:.78rem;line-height:1.6;color:#F5F2EB}
-.wa-bubble .wa-time{font-size:.65rem;color:rgba(245,242,235,.3);margin-top:.4rem;text-align:right}
-.wa-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
-.wa-avatar{width:24px;height:24px;background:rgba(184,150,42,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--gold);font-weight:500}
-.wa-name{font-size:.72rem;color:var(--gold);font-weight:500}
-
-/* HOW */
-.how{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3rem}
-.step{text-align:center;padding:1.5rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);transition:all .2s}
-.step:hover{border-color:var(--gold);box-shadow:0 2px 12px rgba(184,150,42,.08)}
-.step-num{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--gold);opacity:.5;line-height:1;margin-bottom:.75rem}
-.step h3{font-size:.9rem;font-weight:500;margin-bottom:.5rem;color:var(--ink)}
-.step p{font-size:.78rem;color:var(--muted);line-height:1.5}
-
-/* COTIZADOR */
-.quoter{background:var(--bg);border-top:1px solid var(--border)}
-.quoter-inner{display:grid;grid-template-columns:1.2fr 1fr;gap:3rem;margin-top:3rem;align-items:start}
-.quoter-controls{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:2rem;display:flex;flex-direction:column;gap:1.75rem}
-.q-group label{display:block;font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);letter-spacing:.08em;margin-bottom:.75rem}
-.q-group .q-value{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--ink);float:right}
-input[type=range]{width:100%;accent-color:var(--gold);height:3px;cursor:none}
-.q-options{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
-.q-opt{border:1px solid var(--border);border-radius:2px;padding:.4rem .875rem;font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);cursor:none;transition:all .2s;background:transparent}
-.q-opt.active{border-color:var(--gold);color:var(--gold-dark);background:var(--gold-dim);font-weight:500}
-.q-opt:hover{border-color:var(--gold-dark);color:var(--ink)}
-.q-switch{display:flex;align-items:center;justify-content:space-between;gap:1rem}
-.q-switch label{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);letter-spacing:.08em;float:none;margin:0}
-.switch{width:40px;height:22px;background:var(--border);border-radius:11px;position:relative;cursor:none;transition:background .2s;flex-shrink:0}
-.switch.on{background:var(--gold)}
-.switch::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.switch.on::after{left:21px}
-.quoter-result{background:var(--ink);border:1px solid rgba(184,150,42,.3);border-radius:8px;padding:2rem;position:sticky;top:7rem}
-.qr-plan{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--gold);letter-spacing:.1em;margin-bottom:.5rem}
-.qr-name{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.05em;margin-bottom:.25rem;color:#F5F2EB}
-.qr-price{font-family:'Bebas Neue',sans-serif;font-size:4rem;color:var(--gold);line-height:1}
-.qr-period{font-size:.8rem;color:rgba(245,242,235,.4);margin-bottom:1.5rem}
-.qr-divider{height:1px;background:rgba(184,150,42,.15);margin:1.5rem 0}
-.qr-line{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;font-size:.82rem}
-.qr-line span:first-child{color:rgba(245,242,235,.4)}
-.qr-line span:last-child{font-weight:500;color:#F5F2EB}
-.qr-included{margin-top:1rem;display:flex;flex-direction:column;gap:.4rem}
-.qr-item{font-size:.78rem;color:rgba(245,242,235,.5);display:flex;align-items:center;gap:.5rem}
-.qr-item::before{content:'✓';color:var(--gold);flex-shrink:0}
-.qr-item.locked{color:rgba(245,242,235,.2)}
-.qr-item.locked::before{content:'—';color:rgba(245,242,235,.2)}
-.qr-cta{display:block;width:100%;text-align:center;background:var(--gold);color:var(--ink);padding:1rem;border-radius:2px;font-size:.9rem;font-weight:500;letter-spacing:.06em;text-decoration:none;margin-top:1.5rem;transition:background .2s;border:none;cursor:none}
-.qr-cta:hover{background:var(--gold2)}
-.qr-savings{background:rgba(22,101,52,.15);border:1px solid rgba(22,101,52,.25);border-radius:3px;padding:.75rem 1rem;margin-top:.75rem;font-size:.78rem;color:#4ade80;text-align:center}
-
-/* PRICING */
-.pricing{background:var(--bg2);border-top:1px solid var(--border)}
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;align-items:start}
-.plan{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2rem;position:relative;transition:all .2s}
-.plan:hover{border-color:var(--gold);box-shadow:0 4px 24px rgba(184,150,42,.1)}
-.plan.featured{border:2px solid var(--gold);background:var(--bg)}
-.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);font-family:'DM Mono',monospace;font-size:.65rem;padding:.25rem .875rem;border-radius:2px;white-space:nowrap;letter-spacing:.08em;font-weight:500}
-.plan-name{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.1em;color:var(--muted);margin-bottom:1rem}
-.plan-price{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--ink);line-height:1}
-.plan-price sup{font-size:1.2rem;vertical-align:super}
-.plan-price sub{font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--muted);font-weight:300}
-.plan-abonados{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);margin:.75rem 0 1.5rem;padding:.35rem .75rem;background:var(--bg2);border-radius:2px;display:inline-block;border:1px solid var(--border)}
-.plan-divider{height:1px;background:var(--border);margin:1.5rem 0}
-.plan-features{list-style:none;display:flex;flex-direction:column;gap:.6rem}
-.plan-features li{font-size:.82rem;color:var(--muted);display:flex;align-items:flex-start;gap:.6rem;line-height:1.4}
-.plan-features li::before{content:'—';color:var(--border2);flex-shrink:0}
-.plan-features li.on{color:var(--ink2)}
-.plan-features li.on::before{content:'✓';color:var(--green)}
-.plan-features li.ai{color:var(--ai)}
-.plan-features li.ai::before{content:'✦';color:var(--ai)}
-.plan-cta{display:block;text-align:center;margin-top:2rem;padding:.875rem;border-radius:2px;font-size:.875rem;font-weight:500;letter-spacing:.06em;text-decoration:none;transition:all .2s;border:none;cursor:none;width:100%}
-.plan-cta-outline{border:1px solid var(--border);color:var(--muted);background:transparent}
-.plan-cta-outline:hover{border-color:var(--ink);color:var(--ink)}
-.plan-cta-solid{background:var(--gold);color:var(--ink)}
-.plan-cta-solid:hover{background:var(--gold2)}
-.pricing-note{text-align:center;margin-top:2rem;font-size:.82rem;color:var(--muted)}
-.pricing-note strong{color:var(--ink)}
-.vs-label{display:inline-block;background:var(--green-dim);border:1px solid rgba(22,101,52,.2);color:var(--green);font-family:'DM Mono',monospace;font-size:.65rem;padding:.2rem .6rem;border-radius:2px;margin-left:.5rem;letter-spacing:.06em}
-
-/* TESTIMONIAL */
-.testimonial{background:var(--ink);padding:6rem 4rem;text-align:center}
-.quote{font-family:'DM Sans',sans-serif;font-size:1.2rem;font-style:italic;color:rgba(245,242,235,.5);max-width:680px;margin:0 auto 2rem;line-height:1.8;font-weight:300}
-.quote em{color:#F5F2EB;font-style:normal}
-.q-author{display:flex;align-items:center;justify-content:center;gap:1rem}
-.q-av{width:44px;height:44px;border-radius:50%;background:rgba(184,150,42,.15);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--gold);font-weight:500;border:1px solid rgba(184,150,42,.3)}
-.q-name{text-align:left;font-size:.9rem;font-weight:500;color:#F5F2EB}
-.q-role{font-size:.75rem;color:rgba(245,242,235,.4)}
-.testimonial h2{color:#F5F2EB}
-
-/* FAQ */
-.faq{background:var(--bg);border-top:1px solid var(--border)}
-.faq-list{margin-top:2.5rem;border:1px solid var(--border);border-radius:6px;overflow:hidden}
-.faq-item{border-bottom:1px solid var(--border)}
-.faq-item:last-child{border-bottom:none}
-.faq-q{padding:1.25rem 1.5rem;font-size:.9rem;font-weight:400;cursor:none;display:flex;justify-content:space-between;align-items:center;transition:background .2s;user-select:none;color:var(--ink)}
-.faq-q:hover{background:var(--bg2)}
-.faq-q .arr{color:var(--gold);transition:transform .2s;flex-shrink:0;font-size:1.1rem}
-.faq-item.open .faq-q{background:var(--gold-dim)}
-.faq-item.open .faq-q .arr{transform:rotate(45deg)}
-.faq-a{padding:0 1.5rem 1.25rem;font-size:.85rem;color:var(--muted);line-height:1.7;display:none;background:var(--bg)}
-.faq-item.open .faq-a{display:block}
-
-/* CONTACT */
-.contact{background:var(--bg2);padding:6rem 4rem;text-align:center;border-top:1px solid var(--border)}
-.contact-inner{max-width:700px;margin:0 auto}
-.contact p{color:var(--muted);margin-bottom:3rem}
-.form{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:2.5rem;text-align:left}
-input,select,textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:2px;padding:.875rem 1rem;color:var(--ink);font-family:'DM Sans',sans-serif;font-size:.875rem;outline:none;transition:border-color .2s;margin-bottom:1rem}
-input::placeholder,textarea::placeholder{color:var(--muted)}
-input:focus,select:focus,textarea:focus{border-color:var(--gold)}
-select{cursor:none}
-select option{background:var(--bg)}
-textarea{height:100px;resize:vertical;margin-bottom:0}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:0}
-.form-row input{margin-bottom:1rem}
-.submit-btn{width:100%;background:var(--ink);color:#fff;border:none;border-radius:2px;padding:1rem;font-size:.9rem;font-weight:500;letter-spacing:.08em;cursor:none;transition:background .2s;margin-top:1rem}
-.submit-btn:hover{background:var(--gold);color:var(--ink)}
-.wa-direct{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-top:1.5rem;color:var(--muted);font-size:.85rem;flex-wrap:wrap}
-.wa-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--green-dim);border:1px solid rgba(22,101,52,.2);color:var(--green);padding:.5rem 1.25rem;border-radius:2px;text-decoration:none;font-size:.85rem;transition:all .2s}
-.wa-btn:hover{background:rgba(22,101,52,.15);border-color:rgba(22,101,52,.4)}
-
-/* FOOTER */
-footer{background:var(--ink);padding:2.5rem 4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
-.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.1em;color:var(--gold)}
-footer p{font-size:.78rem;color:rgba(245,242,235,.3)}
-.footer-links{display:flex;gap:1.5rem}
-.footer-links a{font-size:.78rem;color:rgba(245,242,235,.3);text-decoration:none;transition:color .2s}
-.footer-links a:hover{color:var(--gold)}
-
-/* REVEAL */
-.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
-.reveal.visible{opacity:1;transform:none}
-.reveal-d1{transition-delay:.1s}
-.reveal-d2{transition-delay:.2s}
-
-/* DIVIDER LINE */
-.gold-line{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.4;margin:0}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-  nav{padding:1rem 1.5rem}
-  .nav-links{display:none}
-  section{padding:4rem 1.5rem}
-  .hero{padding:6rem 1.5rem 3rem}
-  .hero-stats{gap:1.5rem}
-  .features-grid,.steps,.pricing-grid{grid-template-columns:1fr}
-  .notif-grid,.quoter-inner,.form-row{grid-template-columns:1fr}
-  footer{flex-direction:column;text-align:center;padding:2rem 1.5rem}
-}
-</style>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>SecurNet | Software de Monitoreo Inteligente de Alarmas en Monterrey</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <meta name="description" content="SecurNet es el software premium para centrales receptoras de alarmas. Desarrollado en Monterrey, N.L. con IA nativa, automatización y tiempos de respuesta sub-segundo."/>
+    <meta name="keywords" content="software de alarmas, central receptora, monitoreo inteligente, SecurNet Monterrey, automatización de alarmas, falsas alarmas IA, plataforma de seguridad, México"/>
+    <meta property="og:title" content="SecurNet | Software para Centrales Receptoras de Alarmas"/>
+    <meta property="og:description" content="La plataforma de monitoreo más avanzada y rápida. IA nativa y flujos de WhatsApp automáticos. Desarrollado en Monterrey, diseñado para el mundo."/>
+    <meta property="og:type" content="website"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="styles.css">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "background": "#050505",
+                        "primary": "#b8962a",
+                        "primary-glow": "rgba(184, 150, 42, 0.4)",
+                        "surface": "#0a0a0a",
+                        "surface-glass": "rgba(20, 20, 20, 0.7)",
+                        "on-surface": "#f2f2f2",
+                        "on-surface-variant": "#a1a1aa",
+                        "outline-gold": "rgba(184, 150, 42, 0.2)",
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk", "sans-serif"],
+                        "display": ["Bebas Neue", "cursive"],
+                        "body": ["DM Sans", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'gold-glow': '0 0 20px rgba(184, 150, 42, 0.15)',
+                        'gold-glow-strong': '0 0 35px rgba(184, 150, 42, 0.3)',
+                    }
+                },
+            },
+        }
+    </script>
 </head>
-<body>
+<body class="bg-background text-on-surface font-body antialiased selection:bg-primary selection:text-black">
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-
-<!-- NAV -->
-<nav>
-  <div class="logo"><div class="logo-dot"></div>SECURNET</div>
-  <ul class="nav-links">
-    <li><a href="#features">Funciones</a></li>
-    <li><a href="#notificaciones">Notificaciones</a></li>
-    <li><a href="#cotizador">Cotizador</a></li>
-    <li><a href="#precios">Precios</a></li>
-    <li><a href="#faq">FAQ</a></li>
-    <li><a href="#contacto" class="nav-cta">Demo gratuita</a></li>
-  </ul>
+<!-- 1. Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-white/5 flex justify-between items-center px-8 py-4">
+    <div class="flex items-center gap-2">
+        <a href="#" class="logo-container">
+            <img src="logo-banner.png" alt="SecurNet Logo" class="logo-banner">
+        </a>
+    </div>
+    <div class="hidden md:flex items-center gap-10">
+        <a class="text-white/60 hover:text-white transition-colors text-xs font-bold tracking-[0.2em] uppercase font-headline" href="#features">Funciones</a>
+        <a class="text-white/60 hover:text-white transition-colors text-xs font-bold tracking-[0.2em] uppercase font-headline" href="#cotizador">Cotizador</a>
+        <a class="text-white/60 hover:text-white transition-colors text-xs font-bold tracking-[0.2em] uppercase font-headline" href="#precios">Precios</a>
+        <a class="text-white/60 hover:text-white transition-colors text-xs font-bold tracking-[0.2em] uppercase font-headline" href="#contacto">Contacto</a>
+    </div>
+    <a href="#contacto" class="bg-primary text-black px-6 py-2.5 font-bold uppercase tracking-widest text-[10px] hover:shadow-gold-glow-strong transition-all duration-300">
+        Demo Gratuita ↗
+    </a>
 </nav>
 
-<!-- HERO — fondo negro con oro -->
-<section class="hero">
-  <div class="hero-grid"></div>
-  <div class="hero-glow"></div>
-  <div style="position:relative;z-index:1;max-width:1200px;margin:0 auto;width:100%">
-    <div class="hero-tag"><b>●</b>&nbsp;SISTEMA ACTIVO — SEÑALES EN TIEMPO REAL</div>
-    <h1>El software que tu<br>central <em>merece</em></h1>
-    <p class="hero-sub">SecurNet es la plataforma de monitoreo de alarmas moderna, inteligente y accesible. Con IA integrada y notificaciones automáticas por WhatsApp y correo para centrales receptoras en Latinoamérica.</p>
-    <div class="hero-actions">
-      <a href="#contacto" class="btn-gold">Solicitar demo gratuita</a>
-      <a href="#cotizador" class="btn-ghost-hero">Calcular mi precio →</a>
-    </div>
-    <div class="hero-stats">
-      <div><div class="stat-num" id="c1">0</div><div class="stat-label">% uptime garantizado</div></div>
-      <div><div class="stat-num">&lt;<span id="c2">0</span>s</div><div class="stat-label">Latencia de señal</div></div>
-      <div><div class="stat-num" id="c3">0</div><div class="stat-label">Veces más barato que Manitou</div></div>
-      <div><div class="stat-num" id="c4">0</div><div class="stat-label">Meses garantía de satisfacción</div></div>
-    </div>
-  </div>
-</section>
-<div class="gold-line"></div>
-
-<!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-inner">
-    <div class="ticker-item t-alarm"><div class="tdot"></div>⚠ [1234] ALARMA ROBO — ZONA 02 — Operador notificado</div>
-    <div class="ticker-item t-ok"><div class="tdot"></div>✓ [0892] Apertura normal — Auto-cerrado</div>
-    <div class="ticker-item t-ai"><div class="tdot"></div>✦ IA: Falsa alarma detectada — Patrón reconocido en [2210]</div>
-    <div class="ticker-item t-info"><div class="tdot"></div>📱 WhatsApp enviado a contacto de [0331] — Falla AC</div>
-    <div class="ticker-item t-alarm"><div class="tdot"></div>⚠ [0558] PÁNICO SILENCIOSO — ZONA 05 — PRIORIDAD ALTA</div>
-    <div class="ticker-item t-ok"><div class="tdot"></div>✉ Email de reporte diario enviado — 42 eventos procesados</div>
-    <div class="ticker-item t-ai"><div class="tdot"></div>✦ IA: Abonado [1102] fuera de horario habitual — Alerta generada</div>
-    <div class="ticker-item t-info"><div class="tdot"></div>● [0771] Test periódico — Sistema OK</div>
-    <div class="ticker-item t-alarm"><div class="tdot"></div>⚠ [1234] ALARMA ROBO — ZONA 02 — Operador notificado</div>
-    <div class="ticker-item t-ok"><div class="tdot"></div>✓ [0892] Apertura normal — Auto-cerrado</div>
-    <div class="ticker-item t-ai"><div class="tdot"></div>✦ IA: Falsa alarma detectada — Patrón reconocido en [2210]</div>
-    <div class="ticker-item t-info"><div class="tdot"></div>📱 WhatsApp enviado a contacto de [0331] — Falla AC</div>
-    <div class="ticker-item t-alarm"><div class="tdot"></div>⚠ [0558] PÁNICO SILENCIOSO — ZONA 05 — PRIORIDAD ALTA</div>
-    <div class="ticker-item t-ok"><div class="tdot"></div>✉ Email de reporte diario enviado — 42 eventos procesados</div>
-    <div class="ticker-item t-ai"><div class="tdot"></div>✦ IA: Abonado [1102] fuera de horario habitual — Alerta generada</div>
-    <div class="ticker-item t-info"><div class="tdot"></div>● [0771] Test periódico — Sistema OK</div>
-  </div>
-</div>
-
-<!-- VS COMPETENCIA -->
-<section class="vs-section reveal">
-  <div style="max-width:1200px;margin:0 auto;overflow-x:auto">
-    <div class="section-tag">// Comparativa de mercado</div>
-    <h2>¿Por qué SecurNet?</h2>
-    <p class="section-sub">Comparado con los softwares líderes del mercado de seguridad en Latinoamérica.</p>
-    <table class="vs-table">
-      <thead>
-        <tr>
-          <th>Característica</th>
-          <th class="hl">SecurNet ✦</th>
-          <th>Manitou / Bold</th>
-          <th>SoftGuard</th>
-          <th>Solución propia</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Precio mensual</td>
-          <td class="hl price-cell price-gold">$1,500 – $5,000 MXN</td>
-          <td class="price-cell">$8,000 – $40,000 MXN</td>
-          <td class="price-cell">$5,000 – $15,000 MXN</td>
-          <td class="price-cell">$0 + tiempo dev</td>
-        </tr>
-        <tr>
-          <td>Interfaz web moderna</td>
-          <td class="hl"><span class="check">✓</span></td>
-          <td><span class="check">✓</span></td>
-          <td><span class="cross">✗ Solo desktop</span></td>
-          <td>Depende</td>
-        </tr>
-        <tr>
-          <td>IA integrada</td>
-          <td class="hl"><span class="check">✓ Nativo</span></td>
-          <td>Módulo extra</td>
-          <td><span class="cross">✗</span></td>
-          <td><span class="cross">✗</span></td>
-        </tr>
-        <tr>
-          <td>Notif. WhatsApp / Email</td>
-          <td class="hl"><span class="check">✓ Automático</span></td>
-          <td>Integración extra</td>
-          <td>Manual</td>
-          <td>Depende</td>
-        </tr>
-        <tr>
-          <td>Datos en tu servidor</td>
-          <td class="hl"><span class="check">✓</span></td>
-          <td><span class="cross">✗ Cloud externo</span></td>
-          <td><span class="cross">✗</span></td>
-          <td><span class="check">✓</span></td>
-        </tr>
-        <tr>
-          <td>Soporte en español MX</td>
-          <td class="hl"><span class="check">✓ Directo</span></td>
-          <td><span class="cross">✗ EUA / España</span></td>
-          <td>Argentina</td>
-          <td><span class="check">✓</span></td>
-        </tr>
-        <tr>
-          <td>Tiempo de implementación</td>
-          <td class="hl"><span class="check">1 semana</span></td>
-          <td>2 – 6 meses</td>
-          <td>1 – 2 meses</td>
-          <td>6 – 18 meses</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<section class="features reveal" id="features">
-  <div style="max-width:1200px;margin:0 auto">
-    <div class="section-tag">// Funcionalidades</div>
-    <h2>Todo lo que tu central<br>necesita en un solo lugar</h2>
-    <div class="ai-badge">✦ Incluye inteligencia artificial nativa</div>
-    <div class="features-grid">
-      <div class="feat">
-        <div class="feat-num">01 / MONITOREO</div>
-        <h3>Dashboard en tiempo real</h3>
-        <p>Señales entrantes al instante con colorimetría automática por tipo de evento y alertas sonoras diferenciadas para emergencias.</p>
-        <div class="feat-tags"><span class="ftag ftag-gold">Socket.io</span><span class="ftag ftag-green">Multi-operador</span></div>
-      </div>
-      <div class="feat ai-feat">
-        <div class="feat-num">02 / INTELIGENCIA ARTIFICIAL</div>
-        <h3>IA para detección inteligente</h3>
-        <p>Reducción de falsas alarmas, clasificación por prioridad, predicción de fallas y resúmenes automáticos en lenguaje natural al cerrar eventos.</p>
-        <div class="feat-tags"><span class="ftag ftag-ai">✦ IA</span><span class="ftag ftag-ai">Auto-clasificación</span><span class="ftag ftag-ai">Predicción</span></div>
-      </div>
-      <div class="feat">
-        <div class="feat-num">03 / ABONADOS</div>
-        <h3>Gestión completa del cliente</h3>
-        <p>Zonas configurables, usuarios de alarma, ficha técnica del panel, historial completo de eventos y mapa geolocalizado de toda la cartera.</p>
-        <div class="feat-tags"><span class="ftag ftag-green">Zonas</span><span class="ftag ftag-green">Usuarios</span><span class="ftag ftag-green">Mapa</span></div>
-      </div>
-      <div class="feat ai-feat">
-        <div class="feat-num">04 / NOTIFICACIONES AUTOMÁTICAS</div>
-        <h3>WhatsApp, Email y alertas</h3>
-        <p>Notificaciones automáticas al cliente en alarmas no atendidas, reportes periódicos por correo, alertas de no comunica 24h y confirmaciones de atención.</p>
-        <div class="feat-tags"><span class="ftag ftag-ai">WhatsApp</span><span class="ftag ftag-ai">Email</span><span class="ftag ftag-ai">Automático</span></div>
-      </div>
-      <div class="feat">
-        <div class="feat-num">05 / REPORTES</div>
-        <h3>Business intelligence integrado</h3>
-        <p>Dashboard gerencial con KPIs de la central, tiempo de atención por operador y exportación a PDF y Excel para clientes y auditorías.</p>
-        <div class="feat-tags"><span class="ftag ftag-gold">PDF</span><span class="ftag ftag-gold">Excel</span><span class="ftag ftag-green">KPIs</span></div>
-      </div>
-      <div class="feat">
-        <div class="feat-num">06 / TÉCNICO</div>
-        <h3>Órdenes de servicio</h3>
-        <p>Crea y gestiona visitas técnicas, mantenimientos preventivos y fallas reportadas con seguimiento de estado y técnico asignado.</p>
-        <div class="feat-tags"><span class="ftag ftag-green">OT</span><span class="ftag ftag-green">Agenda</span><span class="ftag ftag-green">Seguimiento</span></div>
-      </div>
-      <div class="feat">
-        <div class="feat-num">07 / MONITOR 24H</div>
-        <h3>No comunica automático</h3>
-        <p>Detecta abonados sin señal en más de 24 horas. Genera evento automáticamente y notifica al operador y al cliente sin intervención manual.</p>
-        <div class="feat-tags"><span class="ftag ftag-gold">Automático</span><span class="ftag ftag-gold">24h</span></div>
-      </div>
-      <div class="feat ai-feat">
-        <div class="feat-num">08 / IA / SOPs INTELIGENTES</div>
-        <h3>Procedimientos inteligentes</h3>
-        <p>SOPs visibles durante el evento según el tipo de alarma. La IA genera el resumen al cerrar con lenguaje natural para el archivo histórico.</p>
-        <div class="feat-tags"><span class="ftag ftag-ai">✦ IA</span><span class="ftag ftag-ai">SOPs</span><span class="ftag ftag-ai">Resúmenes</span></div>
-      </div>
-      <div class="feat">
-        <div class="feat-num">09 / SEGURIDAD</div>
-        <h3>Control total y trazabilidad</h3>
-        <p>Roles por usuario, log completo de auditoría, sesiones JWT seguras y acceso remoto cifrado por Cloudflare Tunnel. Tus datos, en tu servidor.</p>
-        <div class="feat-tags"><span class="ftag ftag-green">Roles</span><span class="ftag ftag-green">Auditoría</span><span class="ftag ftag-gold">JWT</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- NOTIFICACIONES -->
-<section class="notif-section reveal" id="notificaciones">
-  <div style="max-width:1200px;margin:0 auto">
-    <div class="notif-grid">
-      <div>
-        <div class="section-tag">// Notificaciones automáticas</div>
-        <h2>Tu cliente siempre<br>informado</h2>
-        <p class="section-sub" style="margin-bottom:2rem">SecurNet notifica automáticamente a tus abonados cuando ocurre un evento relevante, sin intervención manual del operador.</p>
-        <div class="notif-cards">
-          <div class="notif-card">
-            <div class="notif-icon ni-wa">📱</div>
-            <div>
-              <h4>WhatsApp automático</h4>
-              <p>Mensaje instantáneo al contacto del abonado cuando hay una alarma activa no atendida en más de 2 minutos. Incluye zona, tipo de evento y operador.</p>
+<!-- 2. Hero Section -->
+<section class="relative min-h-screen flex items-center pt-24 overflow-hidden network-grid">
+    <div class="absolute inset-0 hero-glow pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+        <div>
+            <span class="inline-block py-1 px-3 border border-primary/30 rounded-full text-[10px] font-bold tracking-[0.2em] text-primary mb-6 uppercase font-headline bg-primary/5">
+                // Infraestructura de Seguridad 4.0
+            </span>
+            <h1 class="font-display text-7xl md:text-8xl leading-[0.85] mb-8 text-white">
+                EL SOFTWARE QUE TU <span class="text-primary italic emissive-text">CENTRAL</span> MERECE TENER
+            </h1>
+            <p class="max-w-xl text-lg text-on-surface-variant mb-10 font-light leading-relaxed">
+                SecurNet es la plataforma de monitoreo de alarmas moderna, inteligente y accesible. Con IA nativa y automatización total para centrales receptoras en Latinoamérica.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-5">
+                <a href="#contacto" class="text-center bg-primary text-black px-12 py-5 font-bold uppercase tracking-widest text-xs shadow-gold-glow hover:shadow-gold-glow-strong transition-all">Comenzar Prueba Gratuita</a>
+                <a href="#cotizador" class="text-center border border-white/10 text-white px-12 py-5 font-bold uppercase tracking-widest text-xs hover:bg-white/5 transition-all backdrop-blur-sm">Simular Inversión</a>
             </div>
-          </div>
-          <div class="notif-card">
-            <div class="notif-icon ni-mail">✉</div>
-            <div>
-              <h4>Reporte por correo</h4>
-              <p>Reporte diario o semanal automático al cliente con resumen de eventos, aperturas, cierres e incidencias. Con el logo de tu central.</p>
+            
+            <div class="grid grid-cols-3 gap-8 mt-20 pt-10 border-t border-white/5">
+                <div>
+                    <div class="text-3xl font-display text-white">99.9%</div>
+                    <div class="text-[9px] uppercase tracking-widest text-on-surface-variant font-headline">Uptime Garantizado</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-display text-white">&lt;0.5s</div>
+                    <div class="text-[9px] uppercase tracking-widest text-on-surface-variant font-headline">Latencia de Señal</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-display text-white">AES-256</div>
+                    <div class="text-[9px] uppercase tracking-widest text-on-surface-variant font-headline">Encriptación Militar</div>
+                </div>
             </div>
-          </div>
-          <div class="notif-card">
-            <div class="notif-icon ni-sms">🔔</div>
-            <div>
-              <h4>Alertas de no comunica</h4>
-              <p>Cuando un abonado lleva más de 24 horas sin señal, SecurNet notifica automáticamente al cliente para que verifique su panel.</p>
+        </div>
+        
+        <div class="relative hidden lg:block">
+            <!-- 3D Visualization Placeholder/Style -->
+            <div class="relative z-10 w-full aspect-square rounded-2xl flex items-center justify-center">
+                <div class="relative w-full h-full flex items-center justify-center">
+                    <div class="absolute w-64 h-64 bg-primary/20 blur-[100px] rounded-full"></div>
+                    <div class="relative flex flex-col items-center">
+                        <div class="w-48 h-48 border border-primary/20 rounded-3xl rotate-45 flex items-center justify-center bg-black/40 backdrop-blur-xl">
+                            <span class="material-symbols-outlined text-primary text-8xl -rotate-45 emissive-text">shield</span>
+                        </div>
+                        <div class="absolute -top-12 -left-12 w-24 h-24 glass-card rounded-xl flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-3xl">lock</span>
+                        </div>
+                        <div class="absolute -bottom-8 -right-8 w-24 h-24 glass-card rounded-xl flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-3xl">hub</span>
+                        </div>
+                        <div class="absolute top-1/2 -right-20 w-16 h-16 glass-card rounded-lg flex items-center justify-center -translate-y-1/2">
+                            <span class="material-symbols-outlined text-primary text-2xl">database</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] network-grid opacity-20 -z-10 skew-y-12"></div>
         </div>
-      </div>
-      <div class="notif-preview">
-        <div class="np-header">
-          <div class="np-dot" style="background:#ff5f57"></div>
-          <div class="np-dot" style="background:#febc2e"></div>
-          <div class="np-dot" style="background:#28c840"></div>
-          <span style="margin-left:.5rem">WhatsApp — SecurNet Notificaciones</span>
+    </div>
+</section>
+
+<!-- 3. Signal Strip -->
+<section class="bg-black/50 py-3 overflow-hidden whitespace-nowrap border-y border-white/5 backdrop-blur-sm">
+    <div class="ticker-scroll">
+        <div class="flex items-center gap-16 px-8">
+            <span class="font-mono text-[10px] text-red-500 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span> ALARMA DETECTADA: ZONA_04</span>
+            <span class="font-mono text-[10px] text-on-surface-variant">NODO_ESTABLE: 104.22.0.1</span>
+            <span class="font-mono text-[10px] text-primary">MODELO_IA: ALARMA_VERIFICADA</span>
+            <span class="font-mono text-[10px] text-blue-400">ENCRIPTACION: ACTIVA_AES_256</span>
+            <span class="font-mono text-[10px] text-green-500 flex items-center gap-2">✓ TEST_PERIODICO: 0892</span>
         </div>
-        <div class="np-body">
-          <div class="wa-bubble">
-            <div class="wa-header">
-              <div class="wa-avatar">SN</div>
-              <span class="wa-name">SecurNet Central</span>
+        <div class="flex items-center gap-16 px-8">
+            <span class="font-mono text-[10px] text-red-500 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span> ALARMA DETECTADA: ZONA_04</span>
+            <span class="font-mono text-[10px] text-on-surface-variant">NODO_ESTABLE: 104.22.0.1</span>
+            <span class="font-mono text-[10px] text-primary">MODELO_IA: ALARMA_VERIFICADA</span>
+            <span class="font-mono text-[10px] text-blue-400">ENCRIPTACION: ACTIVA_AES_256</span>
+            <span class="font-mono text-[10px] text-green-500 flex items-center gap-2">✓ TEST_PERIODICO: 0892</span>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Glassmorphism Features (Why SecurNet) -->
+<section id="features" class="py-32 bg-background relative px-8 overflow-hidden">
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[150px] -z-10"></div>
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-20">
+            <span class="inline-block py-1 px-3 border border-primary/30 rounded-full text-[10px] font-bold tracking-[0.2em] text-primary mb-4 uppercase font-headline">Capacidades</span>
+            <h2 class="text-5xl font-display text-white mb-4">DISEÑADO PARA LA EFICIENCIA</h2>
+            <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
+            <p class="text-on-surface-variant max-w-2xl mx-auto">Inteligencia y velocidades de respuesta sin precedentes mediante nuestra arquitectura 100% enfocada en receptoras de alarmas.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-card p-10 rounded-2xl relative group">
+                <div class="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-8 group-hover:bg-primary/20 transition-all">
+                    <span class="material-symbols-outlined text-primary text-2xl">bolt</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-4 font-headline uppercase tracking-tight">Tiempo Real Total</h3>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Recepción de señales instantánea con arquitecturas redundantes para garantizar que ningún evento crítico se pierda.</p>
             </div>
-            <p>🔴 <strong>ALERTA DE ALARMA</strong><br><br>Su alarma en <strong>Av. Constitución 445</strong> activó una señal de <strong>ROBO en Zona 02 (Sala principal)</strong>.<br><br>Hora: 08:42 hrs<br>Operador atendiendo: Carlos R.<br><br>Si usted generó esta señal, por favor contáctenos para cancelar el procedimiento.</p>
-            <div class="wa-time">08:42 ✓✓</div>
-          </div>
-          <div class="wa-bubble out">
-            <p>No fui yo, estoy fuera. Por favor procedan.</p>
-            <div class="wa-time">08:43 ✓✓</div>
-          </div>
-          <div class="wa-bubble">
-            <div class="wa-header">
-              <div class="wa-avatar">SN</div>
-              <span class="wa-name">SecurNet Central</span>
+            <div class="glass-card p-10 rounded-2xl relative group border-primary/40 shadow-gold-glow">
+                <div class="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-8 group-hover:bg-primary/20 transition-all">
+                    <span class="material-symbols-outlined text-primary text-2xl">smart_toy</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-4 font-headline uppercase tracking-tight">IA Nativa (Smart Classification)</h3>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Clasificación inteligente de falsas alarmas y generación de resúmenes automáticos para históricos impecables.</p>
             </div>
-            <p>✅ <strong>Evento atendido</strong><br><br>Su caso ha sido gestionado. Le informaremos cualquier novedad.<br><br>Tiempo de respuesta: 1m 32s</p>
-            <div class="wa-time">08:44 ✓✓</div>
-          </div>
+            <div class="glass-card p-10 rounded-2xl relative group">
+                <div class="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-8 group-hover:bg-primary/20 transition-all">
+                    <span class="material-symbols-outlined text-primary text-2xl">mark_email_read</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-4 font-headline uppercase tracking-tight">Notificaciones por WhatsApp</h3>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Flujos automatizados que alertan a tus clientes de forma instantánea mediante WhatsApp antes siquiera de que el operador asigne el evento.</p>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </section>
 
-<!-- CÓMO FUNCIONA -->
-<section class="how reveal">
-  <div style="max-width:1200px;margin:0 auto">
-    <div class="section-tag">// Implementación</div>
-    <h2>Operando en menos<br>de una semana</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <h3>Demo y propuesta</h3>
-        <p>Te mostramos SecurNet en vivo con señales reales. Evaluamos tu hardware y definimos el plan ideal para tu operación.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <h3>Instalación</h3>
-        <p>Instalamos en tu servidor local en un día. Configuramos receptoras, protocolos y acceso remoto seguro.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <h3>Migración y alta</h3>
-        <p>Migramos tus abonados existentes y capacitamos a tus operadores el mismo día.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">04</div>
-        <h3>Producción y soporte</h3>
-        <p>Tu central opera desde el primer día con soporte directo durante los primeros 30 días.</p>
-      </div>
+<!-- 5. Interactive Quoter -->
+<section id="cotizador" class="py-32 bg-background relative px-8 border-t border-white/5">
+    <div class="max-w-6xl mx-auto">
+        <div class="glass-card rounded-[2rem] overflow-hidden grid grid-cols-1 lg:grid-cols-2">
+            <div class="p-12 lg:p-20">
+                <span class="text-[10px] font-bold tracking-[0.2em] text-primary mb-2 uppercase font-headline">Cotizador Digital</span>
+                <h2 class="text-4xl font-display text-white mb-10">SIMULA TU INVERSIÓN</h2>
+                <div class="space-y-12">
+                    <div>
+                        <div class="flex justify-between mb-5">
+                            <label class="font-headline font-bold text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">Número de Abonados</label>
+                            <span class="text-primary font-bold emissive-text text-xl" id="qv-abonados">100</span>
+                        </div>
+                        <input id="r-abonados" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" max="500" min="1" type="range" value="100" oninput="updatePrice()"/>
+                        <div class="flex justify-between text-[10px] text-white/20 mt-3 font-mono">
+                            <span>1</span>
+                            <span>250</span>
+                            <span>500+</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-5">
+                            <label class="font-headline font-bold text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">Operadores Simultáneos</label>
+                            <span class="text-primary font-bold emissive-text text-xl" id="qv-ops">3</span>
+                        </div>
+                        <input id="r-ops" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" max="20" min="1" type="range" value="3" oninput="updatePrice()"/>
+                        <div class="flex justify-between text-[10px] text-white/20 mt-3 font-mono">
+                            <span>1</span>
+                            <span>10</span>
+                            <span>20</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-primary/5 p-12 lg:p-20 flex flex-col justify-center items-center text-center border-l border-white/5 relative">
+                <div class="absolute inset-0 network-grid opacity-10 pointer-events-none"></div>
+                <span class="text-[10px] font-headline text-on-surface-variant uppercase tracking-[0.4em] mb-4 relative z-10">Inversión Mensual</span>
+                <div class="text-7xl font-display text-primary mb-2 relative z-10 emissive-text" id="qr-price">$1,500</div>
+                <div class="text-[10px] text-white/30 uppercase tracking-widest mb-10 relative z-10 font-bold">MXN / MES + IVA</div>
+                <div class="w-full text-left bg-black/40 border-l-2 border-primary p-4 mb-8 text-xs text-on-surface-variant">
+                    <div id="q-plan-name" class="font-headline text-white font-bold mb-1 uppercase">Plan Básico</div>
+                    <ul class="space-y-1 mt-2 font-mono text-[10px]">
+                        <li>✓ Instalación y migración incluida ($3,500 pago único)</li>
+                        <li id="q-feat-wa" class="text-white/30">✗ Notificaciones WhatsApp automáticas</li>
+                        <li id="q-feat-ai" class="text-white/30">✗ IA Smart Classification</li>
+                    </ul>
+                </div>
+                <button onclick="document.getElementById('contacto').scrollIntoView()" class="w-full bg-primary text-black py-5 font-bold uppercase text-xs tracking-widest hover:shadow-gold-glow-strong transition-all relative z-10">Reservar Ahora</button>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
-
-<!-- COTIZADOR -->
-<section class="quoter reveal" id="cotizador">
-  <div style="max-width:1200px;margin:0 auto">
-    <div class="section-tag">// Cotizador interactivo</div>
-    <h2>Calcula el precio<br>para tu central</h2>
-    <p class="section-sub" style="margin-bottom:2rem">Ajusta las variables de tu operación y obtén una cotización instantánea.</p>
-    <div class="quoter-inner">
-      <div class="quoter-controls">
-        <div class="q-group">
-          <label>Número de abonados <span class="q-value" id="qv-abonados">100</span></label>
-          <input type="range" id="r-abonados" min="1" max="500" value="100" step="1" oninput="updateQuoter()">
-        </div>
-        <div class="q-group">
-          <label>Operadores simultáneos <span class="q-value" id="qv-ops">2</span></label>
-          <input type="range" id="r-ops" min="1" max="20" value="2" step="1" oninput="updateQuoter()">
-        </div>
-        <div class="q-group">
-          <label>Número de receptoras</label>
-          <div class="q-options">
-            <button class="q-opt active" onclick="selectOpt(this,'receptoras',1)">1</button>
-            <button class="q-opt" onclick="selectOpt(this,'receptoras',2)">2</button>
-            <button class="q-opt" onclick="selectOpt(this,'receptoras',3)">3</button>
-            <button class="q-opt" onclick="selectOpt(this,'receptoras',4)">4+</button>
-          </div>
-        </div>
-        <div class="q-group">
-          <div class="q-switch">
-            <label>Notificaciones WhatsApp / Email</label>
-            <div class="switch on" id="sw-notif" onclick="toggleSwitch('notif')"></div>
-          </div>
-        </div>
-        <div class="q-group">
-          <div class="q-switch">
-            <label>IA para clasificación y resúmenes</label>
-            <div class="switch on" id="sw-ai" onclick="toggleSwitch('ai')"></div>
-          </div>
-        </div>
-        <div class="q-group">
-          <div class="q-switch">
-            <label>Módulo de órdenes de servicio</label>
-            <div class="switch" id="sw-ot" onclick="toggleSwitch('ot')"></div>
-          </div>
-        </div>
-        <div class="q-group">
-          <div class="q-switch">
-            <label>Reportes y estadísticas avanzadas</label>
-            <div class="switch" id="sw-rep" onclick="toggleSwitch('rep')"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="quoter-result">
-        <div class="qr-plan" id="qr-plan">PLAN BÁSICO</div>
-        <div class="qr-name" id="qr-name">Básico</div>
-        <div class="qr-price" id="qr-price">$1,500</div>
-        <div class="qr-period">MXN / mes + IVA</div>
-        <div id="qr-savings" class="qr-savings" style="display:none"></div>
-        <div class="qr-divider"></div>
-        <div class="qr-line"><span>Abonados incluidos</span><span id="ql-abonados">hasta 100</span></div>
-        <div class="qr-line"><span>Operadores</span><span id="ql-ops">hasta 3</span></div>
-        <div class="qr-line"><span>Receptoras</span><span id="ql-rec">1</span></div>
-        <div class="qr-line"><span>Instalación (único)</span><span>$3,500 MXN</span></div>
-        <div class="qr-divider"></div>
-        <div class="qr-included" id="qr-features"></div>
-        <button class="qr-cta" onclick="sendQuote()">Solicitar esta cotización →</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section class="pricing reveal" id="precios">
-  <div style="max-width:1200px;margin:0 auto">
-    <div class="section-tag">// Planes y precios</div>
-    <h2>Precios claros,<br>sin sorpresas</h2>
-    <p class="section-sub">Sin contratos anuales obligatorios. Instalación incluida en todos los planes. Hasta 10x más barato que Manitou. <span class="vs-label">VS MANITOU</span></p>
-    <div class="pricing-grid">
-
-      <div class="plan reveal">
-        <div class="plan-name">PLAN BÁSICO</div>
-        <div class="plan-price"><sup>$</sup>1,500<sub> MXN/mes</sub></div>
-        <div class="plan-abonados">hasta 100 abonados</div>
-        <div class="plan-divider"></div>
-        <ul class="plan-features">
-          <li class="on">Dashboard operador en tiempo real</li>
-          <li class="on">Gestión completa de abonados</li>
-          <li class="on">Historial detallado de eventos</li>
-          <li class="on">Mapa geolocalizado</li>
-          <li class="on">Monitor no comunica 24h</li>
-          <li class="on">Roles: operador y administrador</li>
-          <li class="on">Acceso remoto seguro</li>
-          <li class="on">Soporte técnico en español</li>
-          <li>Notificaciones WhatsApp / Email</li>
-          <li>IA integrada</li>
-          <li>Reportes avanzados</li>
-          <li>Órdenes de servicio</li>
-        </ul>
-        <button class="plan-cta plan-cta-outline" onclick="document.getElementById('contacto').scrollIntoView()">Solicitar información</button>
-      </div>
-
-      <div class="plan featured reveal reveal-d1">
-        <div class="plan-badge">MÁS POPULAR</div>
-        <div class="plan-name">PLAN PROFESIONAL</div>
-        <div class="plan-price"><sup>$</sup>2,500<sub> MXN/mes</sub></div>
-        <div class="plan-abonados">hasta 300 abonados</div>
-        <div class="plan-divider"></div>
-        <ul class="plan-features">
-          <li class="on">Todo lo del plan básico</li>
-          <li class="on">Hasta 5 operadores simultáneos</li>
-          <li class="on">Hasta 2 receptoras</li>
-          <li class="on ai">✦ IA: clasificación de eventos</li>
-          <li class="on ai">✦ IA: reducción falsas alarmas</li>
-          <li class="on ai">✦ IA: resúmenes automáticos</li>
-          <li class="on">Notificaciones WhatsApp automáticas</li>
-          <li class="on">Notificaciones por correo</li>
-          <li class="on">Reportes y estadísticas avanzadas</li>
-          <li class="on">Exportación PDF y Excel</li>
-          <li class="on">Órdenes de servicio</li>
-          <li class="on">Soporte prioritario</li>
-        </ul>
-        <button class="plan-cta plan-cta-solid" onclick="document.getElementById('contacto').scrollIntoView()">Solicitar información</button>
-      </div>
-
-      <div class="plan reveal reveal-d2">
-        <div class="plan-name">PLAN ENTERPRISE</div>
-        <div class="plan-price"><sup>$</sup>5,000<sub> MXN/mes</sub></div>
-        <div class="plan-abonados">abonados ilimitados</div>
-        <div class="plan-divider"></div>
-        <ul class="plan-features">
-          <li class="on">Todo lo del plan profesional</li>
-          <li class="on">Abonados y operadores ilimitados</li>
-          <li class="on">Receptoras ilimitadas</li>
-          <li class="on ai">✦ IA: predicción de fallas</li>
-          <li class="on ai">✦ IA: análisis de patrones</li>
-          <li class="on ai">✦ IA: reportes inteligentes</li>
-          <li class="on">Portal web para clientes finales</li>
-          <li class="on">Integraciones personalizadas</li>
-          <li class="on">Capacitación extendida del equipo</li>
-          <li class="on">SLA garantizado por contrato</li>
-          <li class="on">Soporte directo 24/7</li>
-          <li class="on">Funciones a medida incluidas</li>
-        </ul>
-        <button class="plan-cta plan-cta-outline" onclick="document.getElementById('contacto').scrollIntoView()">Contactar ventas</button>
-      </div>
-
-    </div>
-    <p class="pricing-note">Instalación, configuración y migración de abonados: <strong>$3,500 MXN</strong> pago único · Incluye capacitación y 30 días de acompañamiento</p>
-  </div>
-</section>
-
-<!-- TESTIMONIAL — fondo negro -->
-<div class="gold-line"></div>
-<section class="testimonial reveal">
-  <div class="section-tag" style="display:flex;justify-content:center;color:rgba(184,150,42,.6)">// Caso de éxito</div>
-  <h2 style="text-align:center;margin-bottom:2rem;color:#F5F2EB">Operando en producción</h2>
-  <p class="quote">"Llevábamos años con un sistema que ya no se actualizaba y donde perder eventos era parte de la operación. Desde que implementamos SecurNet, <em>nuestros operadores responden más rápido</em>, tenemos visibilidad real de la central y por primera vez podemos darle reportes mensuales a nuestros clientes."</p>
-  <div class="q-author">
-    <div class="q-av">CP</div>
-    <div>
-      <div class="q-name">Central de Seguridad — Piloto</div>
-      <div class="q-role">Cliente SecurNet desde 2024 · +150 abonados monitoreados</div>
-    </div>
-  </div>
-</section>
-<div class="gold-line"></div>
-
-<!-- FAQ -->
-<section class="faq reveal" id="faq">
-  <div style="max-width:900px;margin:0 auto">
-    <div class="section-tag">// Preguntas frecuentes</div>
-    <h2 style="text-align:center">Lo que todos preguntan</h2>
-    <div class="faq-list">
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">¿Mis datos quedan en mis instalaciones o en la nube? <span class="arr">+</span></div>
-        <div class="faq-a">Tus datos quedan en tu propio servidor local. SecurNet se instala en una PC tuya y los datos de tus abonados nunca salen de tu red. El acceso remoto se hace de forma segura a través de Cloudflare Tunnel, sin que los datos se almacenen en servidores externos. Tú tienes el control total.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">¿Cómo funcionan las notificaciones de WhatsApp? <span class="arr">+</span></div>
-        <div class="faq-a">SecurNet se integra con la API de WhatsApp Business. Cuando un evento supera el tiempo de atención configurado, el sistema envía automáticamente un mensaje al contacto del abonado informando el tipo de alarma, zona y operador asignado. Sin intervención manual del operador.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">¿Qué hace exactamente la IA integrada? <span class="arr">+</span></div>
-        <div class="faq-a">La IA realiza tres funciones principales: (1) Clasificación automática para detectar falsas alarmas basadas en patrones históricos del abonado. (2) Generación de resúmenes en lenguaje natural al cerrar un evento. (3) Detección de comportamientos inusuales como aperturas fuera de horario o señales recurrentes de falla.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">¿Funciona con mi receptor actual? <span class="arr">+</span></div>
-        <div class="faq-a">SecurNet es compatible con receptores que manejen protocolo Sur-Gard y Honeywell Ademco 685 por puerto serial. Si tienes otro protocolo, contáctanos para evaluar la integración. En la mayoría de los casos es posible adaptarlo sin costos adicionales.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">¿Qué pasa si no pago la mensualidad? <span class="arr">+</span></div>
-        <div class="faq-a">El sistema tiene 7 días de gracia. Después entra en modo lectura: puedes ver todos tus eventos e historial pero no puedes atender nuevos eventos ni modificar configuraciones. Al regularizar el pago se reactiva automáticamente. Tus datos nunca se borran.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">¿Cuánto tiempo tarda la instalación y migración? <span class="arr">+</span></div>
-        <div class="faq-a">La instalación y configuración toma entre 4 y 8 horas. La migración de abonados desde Excel o cualquier sistema anterior se hace el mismo día. Al día siguiente ya pueden operar en producción.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">¿Puedo ver el sistema antes de contratar? <span class="arr">+</span></div>
-        <div class="faq-a">Sí. Demo en vivo de 30 minutos con el sistema real funcionando y señales en tiempo real. Sin compromiso, sin costo y sin instalar nada. Solo agenda por el formulario o por WhatsApp.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section class="contact reveal" id="contacto">
-  <div class="contact-inner">
-    <div class="section-tag" style="text-align:center;display:block">// Empecemos</div>
-    <h2>Tu central merece<br>un software <span style="color:var(--gold-dark)">moderno.</span></h2>
-    <p>Agenda una demo gratuita de 30 minutos. Te mostramos el sistema real, respondes tus dudas y decides sin presión.</p>
-    <div class="form">
-      <div class="form-row">
-        <input type="text" placeholder="Tu nombre" id="f-nombre">
-        <input type="text" placeholder="Central / empresa" id="f-empresa">
-      </div>
-      <input type="tel" placeholder="WhatsApp o teléfono" id="f-tel">
-      <input type="email" placeholder="Correo electrónico" id="f-email">
-      <select id="f-abonados">
-        <option value="" disabled selected>¿Cuántos abonados tienes?</option>
-        <option>Menos de 50</option>
-        <option>50 – 150</option>
-        <option>150 – 300</option>
-        <option>Más de 300</option>
-      </select>
-      <select id="f-plan">
-        <option value="" disabled selected>¿Qué plan te interesa?</option>
-        <option>Plan Básico — $1,500 MXN/mes</option>
-        <option>Plan Profesional — $2,500 MXN/mes</option>
-        <option>Plan Enterprise — $5,000 MXN/mes</option>
-        <option>No estoy seguro, necesito asesoría</option>
-      </select>
-      <textarea placeholder="¿Qué software usas actualmente? ¿Qué problema quieres resolver?" id="f-msg"></textarea>
-      <button class="submit-btn" onclick="handleSubmit()">Quiero mi demo gratuita →</button>
-    </div>
-    <div class="wa-direct">
-      <span>¿Prefieres hablar directo?</span>
-      <a href="https://wa.me/521XXXXXXXXXX?text=Hola,%20quiero%20una%20demo%20de%20SecurNet" target="_blank" class="wa-btn">📱 Abrir WhatsApp</a>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">SECURNET</div>
-  <p>© 2025 SecurNet · Software para centrales receptoras de alarmas · México</p>
-  <div class="footer-links">
-    <a href="#">Privacidad</a>
-    <a href="#">Términos</a>
-    <a href="https://wa.me/521XXXXXXXXXX" target="_blank">WhatsApp</a>
-  </div>
-</footer>
 
 <script>
-// Cursor
-const cursor=document.getElementById('cursor');
-const ring=document.getElementById('cursorRing');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-4+'px';cursor.style.top=my-4+'px'});
-function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx-16+'px';ring.style.top=ry-16+'px';requestAnimationFrame(animRing)}
-animRing();
-document.querySelectorAll('a,button,.faq-q,.q-opt,.switch').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2)';ring.style.transform='scale(1.5)'});
-  el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';ring.style.transform='scale(1)'});
-});
+    function updatePrice() {
+        const abonados = parseInt(document.getElementById('r-abonados').value);
+        const ops = parseInt(document.getElementById('r-ops').value);
 
-// Reveal
-const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});},{threshold:.1});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+        document.getElementById('qv-abonados').innerText = abonados > 499 ? "500+" : abonados;
+        document.getElementById('qv-ops').innerText = ops;
 
-// Counters
-function animCount(id,target,dur){
-  const el=document.getElementById(id);if(!el)return;
-  let s=0;const step=target/(dur/16);
-  const t=setInterval(()=>{s+=step;if(s>=target){s=target;clearInterval(t)}el.textContent=Math.round(s);},16);
-}
-const co=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){animCount('c1',99,1200);animCount('c2',3,800);animCount('c3',10,1000);animCount('c4',3,600);co.disconnect();}});},{threshold:.5});
-const hero=document.querySelector('.hero');if(hero)co.observe(hero);
+        let base = 1500;
+        let planName = "Plan Básico";
+        let hasWa = false;
+        let hasAi = false;
 
-// FAQ
-function toggleFaq(el){
-  const item=el.closest('.faq-item');
-  const open=item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
-  if(!open)item.classList.add('open');
-}
+        if (abonados > 300) {
+            base = 5000;
+            planName = "Plan Enterprise";
+            hasWa = true;
+            hasAi = true;
+        } else if (abonados > 100) {
+            base = 2500;
+            planName = "Plan Profesional";
+            hasWa = true;
+            hasAi = true;
+        }
+        
+        document.getElementById('qr-price').innerText = '$' + base.toLocaleString();
+        document.getElementById('q-plan-name').innerText = planName;
+        
+        const qWa = document.getElementById('q-feat-wa');
+        if(hasWa) { qWa.innerText = "✓ Notificaciones WhatsApp automáticas"; qWa.classList.remove("text-white/30"); qWa.classList.add("text-primary");}
+        else { qWa.innerText = "✗ Notificaciones WhatsApp (Desde Plan Prof.)"; qWa.classList.remove("text-primary"); qWa.classList.add("text-white/30");}
 
-// COTIZADOR
-const state={abonados:100,ops:2,receptoras:1,notif:true,ai:true,ot:false,rep:false};
-function selectOpt(el,key,val){
-  el.closest('.q-options').querySelectorAll('.q-opt').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');state[key]=val;updateQuoter();
-}
-function toggleSwitch(key){
-  state[key]=!state[key];
-  const sw=document.getElementById('sw-'+key);
-  if(state[key])sw.classList.add('on');else sw.classList.remove('on');
-  updateQuoter();
-}
-function updateQuoter(){
-  state.abonados=parseInt(document.getElementById('r-abonados').value);
-  state.ops=parseInt(document.getElementById('r-ops').value);
-  document.getElementById('qv-abonados').textContent=state.abonados;
-  document.getElementById('qv-ops').textContent=state.ops;
-  let plan,planName,basePrice,aboLabel,opsLabel;
-  if(state.abonados<=100&&state.ops<=3&&state.receptoras<=1){plan='BÁSICO';planName='Básico';basePrice=1500;aboLabel='hasta 100';opsLabel='hasta 3';}
-  else if(state.abonados<=300&&state.ops<=10&&state.receptoras<=2){plan='PROFESIONAL';planName='Profesional';basePrice=2500;aboLabel='hasta 300';opsLabel='hasta 10';}
-  else{plan='ENTERPRISE';planName='Enterprise';basePrice=5000;aboLabel='Ilimitados';opsLabel='Ilimitados';}
-  let extras=0;
-  if(state.notif&&plan==='BÁSICO')extras+=300;
-  if(state.ai&&plan==='BÁSICO')extras+=400;
-  if(state.ot&&plan==='BÁSICO')extras+=200;
-  if(state.rep&&plan==='BÁSICO')extras+=200;
-  const total=basePrice+extras;
-  document.getElementById('qr-plan').textContent='PLAN '+plan;
-  document.getElementById('qr-name').textContent=planName;
-  document.getElementById('qr-price').textContent='$'+total.toLocaleString();
-  document.getElementById('ql-abonados').textContent=aboLabel;
-  document.getElementById('ql-ops').textContent=opsLabel;
-  document.getElementById('ql-rec').textContent=state.receptoras+(state.receptoras===4?'+':'');
-  const savings=8000-total;
-  const savEl=document.getElementById('qr-savings');
-  if(savings>0){savEl.style.display='block';savEl.textContent='Ahorras $'+savings.toLocaleString()+' MXN/mes vs Manitou';}
-  else{savEl.style.display='none';}
-  const feats=[];
-  ['Dashboard en tiempo real','Gestión de abonados','Monitor no comunica 24h','Acceso remoto seguro','Soporte en español'].forEach(f=>feats.push({t:f,on:true}));
-  feats.push({t:'Notificaciones WhatsApp / Email',on:state.notif||(plan!=='BÁSICO')});
-  feats.push({t:'IA integrada',on:state.ai||(plan!=='BÁSICO')});
-  feats.push({t:'Reportes y estadísticas',on:state.rep||(plan!=='BÁSICO')});
-  feats.push({t:'Órdenes de servicio',on:state.ot||(plan!=='BÁSICO')});
-  if(plan==='ENTERPRISE')feats.push({t:'Portal para clientes finales',on:true});
-  document.getElementById('qr-features').innerHTML=feats.map(f=>`<div class="qr-item${f.on?'':' locked'}">${f.t}</div>`).join('');
-}
-function sendQuote(){
-  const plan=document.getElementById('qr-plan').textContent;
-  const price=document.getElementById('qr-price').textContent;
-  const msg=`Hola, me interesa SecurNet. ${plan} — ${price} MXN/mes. Abonados: ${state.abonados}, Operadores: ${state.ops}, Receptoras: ${state.receptoras}.`;
-  window.open('https://wa.me/521XXXXXXXXXX?text='+encodeURIComponent(msg),'_blank');
-}
-function handleSubmit(){
-  const btn=document.querySelector('.submit-btn');
-  const nombre=document.getElementById('f-nombre').value;
-  const tel=document.getElementById('f-tel').value;
-  if(!nombre||!tel){btn.textContent='Completa nombre y teléfono';btn.style.background='#92400e';setTimeout(()=>{btn.textContent='Quiero mi demo gratuita →';btn.style.background='';},2000);return;}
-  btn.textContent='Enviando...';
-  setTimeout(()=>{btn.textContent='¡Listo! Te contactamos pronto ✓';btn.style.background='#166534';btn.style.color='#fff';},1200);
-}
-updateQuoter();
+        const qAi = document.getElementById('q-feat-ai');
+        if(hasAi) { qAi.innerText = "✓ IA Smart Classification Activa"; qAi.classList.remove("text-white/30"); qAi.classList.add("text-primary");}
+        else { qAi.innerText = "✗ IA Smart Classification (Desde Plan Prof.)"; qAi.classList.remove("text-primary"); qAi.classList.add("text-white/30");}
+    }
+    // init
+    updatePrice();
 </script>
+
+<!-- 6. Pricing -->
+<section id="precios" class="py-32 bg-background px-8 border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Plan 1 -->
+            <div class="glass-card p-12 rounded-2xl flex flex-col">
+                <h3 class="font-headline text-sm text-white/50 font-bold mb-2 uppercase tracking-widest">Básico</h3>
+                <div class="text-5xl font-display text-white mb-2">$1,500<span class="text-xs font-body text-on-surface-variant lowercase ml-2">/mes</span></div>
+                <div class="text-xs font-mono text-primary mb-8 border border-primary/20 bg-primary/10 inline-block px-3 py-1 rounded">Hasta 100 Abonados</div>
+                
+                <ul class="space-y-4 mb-12 flex-grow">
+                    <li class="flex items-center gap-3 text-sm text-on-surface-variant"><span class="material-symbols-outlined text-primary text-lg">check</span> 3 Operadores</li>
+                    <li class="flex items-center gap-3 text-sm text-on-surface-variant"><span class="material-symbols-outlined text-primary text-lg">check</span> 1 Receptora IP</li>
+                    <li class="flex items-center gap-3 text-sm text-on-surface-variant"><span class="material-symbols-outlined text-primary text-lg">check</span> Dashboard en tiempo real</li>
+                    <li class="flex items-center gap-3 text-sm text-on-surface-variant"><span class="material-symbols-outlined text-primary text-lg">check</span> Monitor no comunica 24h</li>
+                </ul>
+                <a href="#contacto" class="text-center w-full border border-white/10 text-white py-4 font-bold uppercase text-[10px] tracking-widest hover:bg-white/5 transition-all">Seleccionar Plan</a>
+            </div>
+            
+            <!-- Plan 2 -->
+            <div class="glass-card p-12 rounded-2xl border-primary/40 shadow-gold-glow relative flex flex-col transform md:scale-105 z-10 bg-[#0d0d0b]">
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-black px-6 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] shadow-lg">Recomendado</div>
+                <h3 class="font-headline text-sm text-primary font-bold mb-2 uppercase tracking-widest">Profesional</h3>
+                <div class="text-5xl font-display text-white mb-2 emissive-text">$2,500<span class="text-xs font-body text-on-surface-variant lowercase ml-2">/mes</span></div>
+                <div class="text-xs font-mono text-primary mb-8 border border-primary/20 bg-primary/10 inline-block px-3 py-1 rounded">Hasta 300 Abonados</div>
+                
+                <ul class="space-y-4 mb-12 flex-grow">
+                    <li class="flex items-center gap-3 text-sm text-white"><span class="material-symbols-outlined text-primary text-lg">check</span> 10 Operadores y 2 Receptoras</li>
+                    <li class="flex items-center gap-3 text-sm text-primary"><span class="material-symbols-outlined text-primary text-lg">auto_awesome</span> IA Smart Classification</li>
+                    <li class="flex items-center gap-3 text-sm text-primary"><span class="material-symbols-outlined text-primary text-lg">mark_chat_read</span> WhatsApp Automático</li>
+                    <li class="flex items-center gap-3 text-sm text-white"><span class="material-symbols-outlined text-primary text-lg">check</span> Reportes avanzados PDF/Excel</li>
+                    <li class="flex items-center gap-3 text-sm text-white"><span class="material-symbols-outlined text-primary text-lg">check</span> Órdenes de Servicio (OT)</li>
+                </ul>
+                <a href="#contacto" class="text-center w-full bg-primary text-black py-4 font-bold uppercase text-[10px] tracking-widest shadow-gold-glow hover:shadow-gold-glow-strong transition-all">Empezar Ahora</a>
+            </div>
+            
+            <!-- Plan 3 -->
+            <div class="glass-card p-12 rounded-2xl flex flex-col">
+                <h3 class="font-headline text-sm text-white/50 font-bold mb-2 uppercase tracking-widest">Enterprise</h3>
+                <div class="text-5xl font-display text-white mb-2">$5,000<span class="text-xs font-body text-on-surface-variant lowercase ml-2">/mes</span></div>
+                <div class="text-xs font-mono text-primary mb-8 border border-primary/20 bg-primary/10 inline-block px-3 py-1 rounded">Ilimitados</div>
+
+                <ul class="space-y-4 mb-12 flex-grow">
+                    <li class="flex items-center gap-3 text-sm text-on-surface-variant"><span class="material-symbols-outlined text-primary text-lg">check</span> Nodos Exclusivos</li>
+                    <li class="flex items-center gap-3 text-sm text-on-surface-variant"><span class="material-symbols-outlined text-primary text-lg">check</span> Soporte 24/7 Prioritario</li>
+                    <li class="flex items-center gap-3 text-sm text-on-surface-variant"><span class="material-symbols-outlined text-primary text-lg">check</span> Portal para Clientes Finales</li>
+                    <li class="flex items-center gap-3 text-sm text-on-surface-variant"><span class="material-symbols-outlined text-primary text-lg">check</span> SLA por contrato</li>
+                </ul>
+                <a href="#contacto" class="text-center w-full border border-white/10 text-white py-4 font-bold uppercase text-[10px] tracking-widest hover:bg-white/5 transition-all">Contactar Ventas</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 7. Testimonial -->
+<section class="py-40 bg-background border-y border-white/5 relative">
+    <div class="max-w-4xl mx-auto px-8 text-center relative z-10">
+        <span class="material-symbols-outlined text-7xl text-primary/20 mb-10" data-weight="fill">format_quote</span>
+        <blockquote class="text-4xl md:text-5xl font-light italic text-white leading-[1.2] mb-16">
+            "Llevábamos años con un sistema que ya no se actualizaba y donde perder eventos era normal. Desde que implementamos SecurNet, el tiempo de respuesta mejoró un 40%."
+        </blockquote>
+        <div class="flex flex-col items-center">
+            <div class="relative mb-6">
+                <div class="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
+                <div class="w-16 h-16 rounded-full bg-primary/10 border-2 border-white/10 flex items-center justify-center relative z-10 text-xl font-bold text-primary">CP</div>
+            </div>
+            <div class="font-bold text-white uppercase tracking-[0.2em] text-xs font-headline">Central de Seguridad · Piloto</div>
+            <div class="text-primary text-[10px] uppercase tracking-widest mt-1">Más de 150 abonados procesados sin latencia.</div>
+        </div>
+    </div>
+</section>
+
+<!-- 8. Contact Form -->
+<section id="contacto" class="py-32 bg-background px-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="glass-card rounded-3xl p-1 md:p-1 overflow-hidden grid grid-cols-1 lg:grid-cols-2">
+            <div class="p-12 md:p-20">
+                <h2 class="text-5xl font-display text-white mb-8 uppercase">Asegura tu Centro de Monitoreo</h2>
+                <p class="text-on-surface-variant mb-12 max-w-sm">Agenda una demo gratuita de 30 minutos. Te mostramos el sistema real, aclaramos dudas y defines tu plan.</p>
+                <div class="space-y-6">
+                    <div class="flex items-center gap-5 text-white font-bold group">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-black transition-all">
+                            <span class="material-symbols-outlined text-sm">phone</span>
+                        </div>
+                        <span class="text-sm tracking-widest">+52 1 234 567 8900</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white/5 p-12 md:p-20 border-l border-white/5">
+                <form class="space-y-8" onsubmit="event.preventDefault(); alert('Solicitud enviada exitosamente.');">
+                    <div class="relative">
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-2">Nombre Completo</label>
+                        <input class="w-full bg-transparent border-b border-white/10 focus:border-primary focus:ring-0 px-0 py-3 transition-colors text-white text-sm outline-none" placeholder="Nombre y Apellido" type="text" required/>
+                    </div>
+                    <div class="relative">
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-2">Correo Electrónico</label>
+                        <input class="w-full bg-transparent border-b border-white/10 focus:border-primary focus:ring-0 px-0 py-3 transition-colors text-white text-sm outline-none" placeholder="correo@empresa.com" type="email" required/>
+                    </div>
+                    <div class="relative">
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-2">Plan Deseado</label>
+                        <select class="w-full bg-transparent border-b border-white/10 focus:border-primary focus:ring-0 px-0 py-3 transition-colors text-white text-sm outline-none appearance-none" style="background:#0a0a0a" required>
+                            <option value="basico">Plan Básico</option>
+                            <option value="profesional">Plan Profesional</option>
+                            <option value="enterprise">Plan Enterprise / Asesoría</option>
+                        </select>
+                    </div>
+                    <button class="w-full bg-primary text-black py-5 font-bold uppercase text-[10px] tracking-[0.3em] shadow-gold-glow hover:shadow-gold-glow-strong transition-all mt-8">Enviar Solicitud</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 9. Footer -->
+<footer class="bg-background w-full py-16 px-8 border-t border-white/5">
+    <div class="max-w-7xl mx-auto flex flex-col gap-12">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="logo-container h-24">
+                    <img src="logo.png" alt="SecurNet Logo Vertical" class="logo-vertical">
+                </div>
+            </div>
+            <div class="flex flex-wrap justify-center gap-10">
+                <a class="text-white/40 hover:text-primary transition-colors text-[10px] font-headline font-bold uppercase tracking-widest" href="#">Privacidad</a>
+                <a class="text-white/40 hover:text-primary transition-colors text-[10px] font-headline font-bold uppercase tracking-widest" href="#">Términos</a>
+                <a class="text-white/40 hover:text-primary transition-colors text-[10px] font-headline font-bold uppercase tracking-widest" href="#">Contacto</a>
+            </div>
+        </div>
+        <div class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-4">
+            <span class="text-[9px] text-white/20 font-label uppercase tracking-widest">© 2025 SecurNet Software. Todos los derechos reservados.</span>
+            <span class="text-[9px] text-white/20 font-label uppercase tracking-widest">Desarrollado en Monterrey, N.L., México para Centrales Receptoras en Latam</span>
+        </div>
+    </div>
+</footer>
+
+    <script src="main.js" defer></script>
 </body>
 </html>

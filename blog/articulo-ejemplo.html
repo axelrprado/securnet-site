@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Clasificación Automática de Señales | Blog SecurNet</title>
+    <meta name="description" content="Descubre cómo la IA de SecurNet puede reducir hasta un 90% la carga operativa de tus monitoristas en tiempo real decantando falsas alarmas."/>
+    <meta name="keywords" content="blog alarmas, tendencias monitoreo, tecnología centrales receptoras, software Inteligencia artificial, Monterrey, SecurNet"/>
+    <meta property="og:title" content="Clasificación Automática de Señales: El Fin de las Falsas Alarmas"/>
+    <meta property="og:description" content="Descubre cómo la IA de SecurNet reduce radicalmente la carga de eventos en tu central receptora de alarmas."/>
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="../styles.css">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "background": "#050505",
+                        "primary": "#b8962a",
+                        "on-surface": "#f2f2f2",
+                        "on-surface-variant": "#a1a1aa",
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk", "sans-serif"],
+                        "display": ["Bebas Neue", "cursive"],
+                        "body": ["DM Sans", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body antialiased selection:bg-primary selection:text-black">
+
+<!-- Navbar -->
+<nav class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-white/5 flex justify-between items-center px-8 py-4">
+    <div class="flex items-center gap-2">
+        <a href="../securnet-gold.html" class="logo-container">
+            <img src="../logo-banner.png" alt="SecurNet Logo" class="logo-banner">
+        </a>
+    </div>
+    <div class="hidden md:flex items-center gap-10">
+        <a class="text-white/60 hover:text-white transition-colors text-xs font-bold tracking-[0.2em] uppercase font-headline" href="../securnet-gold.html#features">Plataforma</a>
+        <a class="text-primary hover:text-primary transition-colors text-xs font-bold tracking-[0.2em] uppercase font-headline" href="../blog.html">Blog</a>
+    </div>
+    <a href="../securnet-gold.html#contacto" class="border border-primary text-primary px-6 py-2.5 font-bold uppercase tracking-widest text-[10px] hover:bg-primary hover:text-black transition-all">
+        Iniciar Prueba Gratuita
+    </a>
+</nav>
+
+<!-- Article Header -->
+<header class="pt-40 pb-16 relative px-8">
+    <div class="max-w-3xl mx-auto flex flex-col items-center text-center">
+        <div class="flex gap-2 mb-8">
+            <span class="text-[10px] uppercase tracking-widest text-primary font-bold border border-primary/30 px-3 py-1 rounded">Inteligencia Artificial</span>
+        </div>
+        <h1 class="font-display text-5xl md:text-7xl mb-8 text-white uppercase leading-[0.9]"><span class="text-primary emissive-text">Clasificación Automática</span><br>El Fin de las Falsas Alarmas</h1>
+        
+        <div class="flex items-center gap-4 border-y border-white/5 py-6 w-full justify-center">
+            <div class="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm">EO</div>
+            <div class="flex flex-col text-left">
+                <span class="text-sm text-white font-bold">Equipo Operativo, SecurNet</span>
+                <span class="text-[10px] text-white/40 uppercase tracking-widest">24 Marzo 2026 · Monterrey, México · Lectura de 3 min</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Article Content -->
+<article class="px-8 pb-32">
+    <div class="max-w-3xl mx-auto prose prose-invert prose-lg text-on-surface-variant font-body">
+        <p class="lead text-xl text-white font-light">En el mundo del monitoreo de alarmas, uno de los mayores desafíos logísticos y financieros es el abrumador volumen de señales irrelevantes o "falsas alarmas". Procesar eventos no críticos detiene la respuesta ante emergencias reales, aumenta la fatiga de los operadores y degrada el servicio.</p>
+
+        <p>Históricamente, solucionar este problema requería reglas manuales de descarte complejas y propensas a errores, o peor aún, ignorar ciertos códigos. En SecurNet, desarrollado en Monterrey con visión de vanguardia, decidimos aplicar Inteligencia Artificial Nativa directamente al flujo de señales entrantes.</p>
+
+        <h2>¿Cómo funciona la Smart Classification?</h2>
+        <p>Nuestro modelo patentado captura cada evento de las receptoras IP antes de que sea encolado para un operador. Evalúa instantáneamente (en menos de <strong class="text-white">0.5 segundos</strong>):</p>
+        <ul>
+            <li>El histórico del abonado particular (tasas de rebotes o señales previas similares).</li>
+            <li>Horarios, zonas declaradas y metadatos de los paneles de control.</li>
+            <li>Patrones de comportamiento globales de todas las centrales usando nuestro modelo federado.</li>
+        </ul>
+
+        <blockquote>
+            La clasificación de IA no "ignora" las señales; las audita y encapsula en el histórico del abonado mediante un resumen descriptivo automático, liberando la pantalla táctica del equipo humano.<br>
+            <span class="text-sm text-primary uppercase tracking-widest block mt-2">— Departamento de Producto, SecurNet</span>
+        </blockquote>
+
+        <h2>Beneficios de Inmediato Impacto</h2>
+        <ol>
+            <li><strong>Optimización de Recursos Humanos:</strong> Tu equipo puede dedicarse a llamadas críticas, incrementando su capacidad en un 40%.</li>
+            <li><strong>Tiempos de Respuesta Estables:</strong> Al limpiar la "basura" visual de las pantallas, una emergencia real no se pierde entre notificaciones secundarias de restauraciones erráticas.</li>
+            <li><strong>WhatsApp Automático Integrado:</strong> Si el sistema clasifica una alerta de "baja prioridad", se puede notificar vía WhatsApp al usuario principal, logrando servicio inmediato sin acción del operador.</li>
+        </ol>
+
+        <p>La adopción de software para centrales receptoras que integre IA no es el futuro lejano; está sucediendo hoy y SecurNet se enorgullece de liderar esta revolución desde Monterrey para toda América Latina.</p>
+
+        <hr class="border-white/10 my-10">
+        
+        <p class="text-center italic text-sm text-white/50">¿Listo para dejar atrás los protocolos ineficientes y escalar tu receptora central sin elevar costos de nómina de forma paralela? <a href="../securnet-gold.html#contacto">Cotiza tu central en menos de 2 minutos</a>.</p>
+    </div>
+</article>
+
+<!-- Footer -->
+<footer class="bg-background w-full py-16 px-8 border-t border-white/5">
+    <div class="max-w-3xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="logo-container h-16">
+            <img src="../logo.png" alt="SecurNet Logo Vertical" class="logo-vertical">
+        </div>
+        <span class="text-[9px] text-white/20 font-label uppercase tracking-widest">© 2025 SecurNet Software. Todos los derechos reservados.</span>
+        <span class="text-[9px] text-white/20 font-label uppercase tracking-widest">Desarrollado en Monterrey, N.L., México para Centrales Receptoras en Latam</span>
+    </div>
+</footer>
+
+    <script src="../main.js" defer></script>
+</body>
+</html>

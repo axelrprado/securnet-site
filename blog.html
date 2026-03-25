@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Blog SecurNet | Tendencias en Monitoreo de Alarmas y Seguridad Integral</title>
+    <meta name="description" content="Lee los últimos artículos, tendencias tecnológicas y mejores prácticas para gestionar tu central receptora de alarmas. Conocimiento directo desde SecurNet, Monterrey."/>
+    <meta name="keywords" content="blog alarmas, tendencias monitoreo, tecnología centrales receptoras, Monterrey, SecurNet blog"/>
+    <link rel="icon" type="image/png" href="logo.png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="styles.css">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "background": "#050505",
+                        "primary": "#b8962a",
+                        "on-surface": "#f2f2f2",
+                        "on-surface-variant": "#a1a1aa",
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk", "sans-serif"],
+                        "display": ["Bebas Neue", "cursive"],
+                        "body": ["DM Sans", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body antialiased selection:bg-primary selection:text-black">
+
+<!-- Navbar -->
+<nav class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-white/5 flex justify-between items-center px-8 py-4">
+    <div class="flex items-center gap-2">
+        <a href="securnet-gold.html" class="logo-container">
+            <img src="logo-banner.png" alt="SecurNet Logo" class="logo-banner">
+        </a>
+    </div>
+    <div class="hidden md:flex items-center gap-10">
+        <a class="text-white/60 hover:text-white transition-colors text-xs font-bold tracking-[0.2em] uppercase font-headline" href="securnet-gold.html#features">Plataforma</a>
+        <a class="text-white hover:text-primary transition-colors text-xs font-bold tracking-[0.2em] uppercase font-headline" href="blog.html">Blog</a>
+    </div>
+    <a href="securnet-gold.html#contacto" class="border border-primary text-primary px-6 py-2.5 font-bold uppercase tracking-widest text-[10px] hover:bg-primary hover:text-black transition-all">
+        Volver al Inicio
+    </a>
+</nav>
+
+<!-- Header -->
+<header class="pt-40 pb-20 relative px-8 network-grid border-b border-white/5">
+    <div class="absolute inset-0 bg-background/80 pointer-events-none"></div>
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+        <span class="inline-block py-1 px-3 border border-primary/30 rounded-full text-[10px] font-bold tracking-[0.2em] text-primary mb-6 uppercase font-headline bg-primary/5">SecurNet Insights</span>
+        <h1 class="font-display text-6xl md:text-8xl mb-6 text-white uppercase"><span class="text-primary emissive-text">Elevando</span> la Barra en Monitoreo</h1>
+        <p class="text-lg text-on-surface-variant max-w-2xl mx-auto font-light">Artículos técnicos, estrategias operativas y tendencias de seguridad inteligente desarrolladas en Monterrey para Lationamérica.</p>
+    </div>
+</header>
+
+<!-- Blog Grid -->
+<main class="py-24 px-8 max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <!-- Post 1 -->
+        <article class="glass-card rounded-2xl overflow-hidden flex flex-col cursor-pointer group" onclick="window.location.href='blog/articulo-ejemplo.html'">
+            <div class="h-48 bg-white/5 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10"></div>
+                <!-- Placeholder Image -->
+                <div class="absolute inset-0 bg-primary/20 group-hover:bg-primary/30 transition-colors flex items-center justify-center">
+                    <span class="material-symbols-outlined text-6xl text-primary/40">memory</span>
+                </div>
+            </div>
+            <div class="p-8 flex flex-col flex-grow">
+                <div class="flex gap-2 mb-4">
+                    <span class="text-[9px] uppercase tracking-widest text-primary font-bold border border-primary/30 px-2 py-0.5 rounded">Inteligencia Artificial</span>
+                </div>
+                <h2 class="text-2xl font-headline font-bold text-white mb-3 group-hover:text-primary transition-colors">Clasificación Automática de Señales: El Fin de las Falsas Alarmas</h2>
+                <p class="text-sm text-on-surface-variant mb-6 flex-grow">Descubre cómo la IA de SecurNet puede reducir hasta un 90% la carga operativa de tus monitoristas en tiempo real.</p>
+                <div class="flex items-center gap-3 mt-auto pt-4 border-t border-white/10">
+                    <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs">EO</div>
+                    <div class="flex flex-col">
+                        <span class="text-xs text-white font-bold">Equipo Operativo</span>
+                        <span class="text-[10px] text-white/40 uppercase tracking-widest">24 Mar 2026</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Post 2 -->
+        <article class="glass-card rounded-2xl overflow-hidden flex flex-col cursor-pointer group">
+            <div class="h-48 bg-white/5 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10"></div>
+                <!-- Placeholder Image -->
+                <div class="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-colors flex items-center justify-center">
+                    <span class="material-symbols-outlined text-6xl text-primary/40">rocket_launch</span>
+                </div>
+            </div>
+            <div class="p-8 flex flex-col flex-grow">
+                <div class="flex gap-2 mb-4">
+                    <span class="text-[9px] uppercase tracking-widest text-primary font-bold border border-primary/30 px-2 py-0.5 rounded">Infraestructura</span>
+                </div>
+                <h2 class="text-2xl font-headline font-bold text-white mb-3 group-hover:text-primary transition-colors">Migrando a SecurNet desde Sistemas Legacy</h2>
+                <p class="text-sm text-on-surface-variant mb-6 flex-grow">Una guía paso a paso sobre cómo centralizar y fortalecer la operación de tu base de clientes sin experimentar caídas del servicio.</p>
+                <div class="flex items-center gap-3 mt-auto pt-4 border-t border-white/10">
+                    <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs">SE</div>
+                    <div class="flex flex-col">
+                        <span class="text-xs text-white font-bold">Soporte Estratégico</span>
+                        <span class="text-[10px] text-white/40 uppercase tracking-widest">15 Mar 2026</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+        
+        <!-- Post 3 -->
+        <article class="glass-card rounded-2xl overflow-hidden flex flex-col cursor-pointer group">
+            <div class="h-48 bg-white/5 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10"></div>
+                <!-- Placeholder Image -->
+                <div class="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-colors flex items-center justify-center">
+                    <span class="material-symbols-outlined text-6xl text-primary/40">mark_chat_read</span>
+                </div>
+            </div>
+            <div class="p-8 flex flex-col flex-grow">
+                <div class="flex gap-2 mb-4">
+                    <span class="text-[9px] uppercase tracking-widest text-primary font-bold border border-primary/30 px-2 py-0.5 rounded">Operatividad</span>
+                </div>
+                <h2 class="text-2xl font-headline font-bold text-white mb-3 group-hover:text-primary transition-colors">El Impacto de WhatsApp Automático en la Retención de Clientes</h2>
+                <p class="text-sm text-on-surface-variant mb-6 flex-grow">Por qué la inmediatez proactiva está transformando el índice de satisfacción de las centrales modernas.</p>
+                <div class="flex items-center gap-3 mt-auto pt-4 border-t border-white/10">
+                    <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs">CD</div>
+                    <div class="flex flex-col">
+                        <span class="text-xs text-white font-bold">Comunicaciones</span>
+                        <span class="text-[10px] text-white/40 uppercase tracking-widest">28 Feb 2026</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-background w-full py-16 px-8 border-t border-white/5 mt-20">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="logo-container h-16">
+            <img src="logo.png" alt="SecurNet Logo Vertical" class="logo-vertical">
+        </div>
+        <span class="text-[9px] text-white/20 font-label uppercase tracking-widest">© 2025 SecurNet Software. Todos los derechos reservados.</span>
+        <span class="text-[9px] text-white/20 font-label uppercase tracking-widest">Desarrollado en Monterrey, N.L., México para Centrales Receptoras en Latam</span>
+    </div>
+</footer>
+
+    <script src="main.js" defer></script>
+</body>
+</html>
